@@ -1,52 +1,10 @@
-const axios = require('axios');
-const cache = require('../config/cache');
+const axios  = require('axios');
+const cache  = require('../config/cache');
+const { mapBookFromSearch, mapBookFromDetail } = require('../utils/bookHelpers');
 
-const GBOOKS_BASE = 'https://www.googleapis.com/books/v1';
-const GBOOKS_KEY  = process.env.GOOGLE_BOOKS_API_KEY;
-
-const resolveBookLinks = (volumeInfo) => {
-  const title       = volumeInfo.title        || '';
-  const author      = volumeInfo.authors?.[0] || '';
-  const searchQuery = encodeURIComponent(`${title} ${author}`.trim());
-
-  return {
-    readOnline: volumeInfo.previewLink || null,
-    buyLinks: {
-      gramedia:  `https://www.gramedia.com/search/?q=${searchQuery}`,
-      tokopedia: `https://www.tokopedia.com/search?st=product&q=${encodeURIComponent(title)}`,
-    },
-    isFullyReadable: volumeInfo.accessInfo?.viewability === 'ALL_PAGES',
-  };
-};
-
-const mapBookData = (item) => {
-  const v = item.volumeInfo || {};
-  const s = item.saleInfo   || {};
-
-  return {
-    id:            item.id,
-    title:         v.title   || 'Untitled',
-    authors:       v.authors || ['Unknown Author'],
-    description:   v.description || null,
-    cover:         v.imageLinks?.large
-                || v.imageLinks?.medium
-                || v.imageLinks?.thumbnail?.replace('http://', 'https://')
-                || null,
-    publishedYear: v.publishedDate?.split('-')[0] || 'N/A',
-    pageCount:     v.pageCount    || null,
-    categories:    v.categories   || [],
-    rating:        v.averageRating || null,
-    ratingsCount:  v.ratingsCount  || 0,
-    language:      v.language      || 'N/A',
-    isbn:          v.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier
-                || v.industryIdentifiers?.find(i => i.type === 'ISBN_10')?.identifier
-                || null,
-    price:         s.retailPrice
-                   ? { amount: s.retailPrice.amount, currency: s.retailPrice.currencyCode }
-                   : null,
-    links:         resolveBookLinks(v),
-  };
-};
+const OL_BASE   = 'https://openlibrary.org';
+const OL_SEARCH = `${OL_BASE}/search.json`;
+const FIELDS    = 'key,title,author_name,cover_i,first_publish_year,ratings_average,ratings_count,number_of_pages_median,subject,language,isbn,public_scan_b,first_sentence';
 
 const getFeaturedBooks = async (req, res, next) => {
   const cacheKey = 'books:featured';
@@ -54,20 +12,28 @@ const getFeaturedBooks = async (req, res, next) => {
     const cached = cache.get(cacheKey);
     if (cached) return res.json({ success: true, source: 'cache', data: cached });
 
-    const { data } = await axios.get(`${GBOOKS_BASE}/volumes`, {
-      params: {
-        key:         GBOOKS_KEY,
-        q:           'subject:fiction bestseller',
-        orderBy:     'relevance',
-        maxResults:  20,
-        langRestrict:'id',
-        printType:   'books',
-      },
+    const { data } = await axios.get(OL_SEARCH, {
+      params: { q: 'subject:fiction', sort: 'rating', limit: 20, lang: 'ind', fields: FIELDS },
     });
 
-    const books = (data.items || []).map(mapBookData);
+    const books = (data.docs || []).map(mapBookFromSearch);
     cache.set(cacheKey, books, 7200);
+    res.json({ success: true, source: 'api', data: books });
+  } catch (error) { next(error); }
+};
 
+const getPopularBooks = async (req, res, next) => {
+  const cacheKey = 'books:popular';
+  try {
+    const cached = cache.get(cacheKey);
+    if (cached) return res.json({ success: true, source: 'cache', data: cached });
+
+    const { data } = await axios.get(OL_SEARCH, {
+      params: { q: 'subject:bestseller', sort: 'rating', limit: 20, fields: FIELDS },
+    });
+
+    const books = (data.docs || []).map(mapBookFromSearch);
+    cache.set(cacheKey, books, 7200);
     res.json({ success: true, source: 'api', data: books });
   } catch (error) { next(error); }
 };
@@ -79,13 +45,13 @@ const getBookDetail = async (req, res, next) => {
     const cached = cache.get(cacheKey);
     if (cached) return res.json({ success: true, source: 'cache', data: cached });
 
-    const { data } = await axios.get(`${GBOOKS_BASE}/volumes/${id}`, {
-      params: { key: GBOOKS_KEY },
-    });
+    const [workRes, editionsRes] = await Promise.all([
+      axios.get(`${OL_BASE}/works/${id}.json`),
+      axios.get(`${OL_BASE}/works/${id}/editions.json?limit=1`),
+    ]);
 
-    const book = mapBookData(data);
+    const book = mapBookFromDetail(workRes.data, editionsRes.data?.entries || []);
     cache.set(cacheKey, book, 43200);
-
     res.json({ success: true, source: 'api', data: book });
   } catch (error) {
     if (error.response?.status === 404) {
@@ -97,31 +63,21 @@ const getBookDetail = async (req, res, next) => {
 };
 
 const searchBooks = async (req, res, next) => {
-  const { q, page = 0 } = req.query;
+  const { q, page = 1 } = req.query;
   if (!q || q.trim().length < 2)
     return res.status(400).json({ success: false, message: 'Query minimal 2 karakter' });
 
   try {
-    const { data } = await axios.get(`${GBOOKS_BASE}/volumes`, {
-      params: {
-        key:        GBOOKS_KEY,
-        q:          q.trim(),
-        maxResults: 20,
-        startIndex: parseInt(page) * 20,
-        printType:  'books',
-        orderBy:    'relevance',
-      },
+    const { data } = await axios.get(OL_SEARCH, {
+      params: { q: q.trim(), limit: 20, offset: (parseInt(page) - 1) * 20, fields: FIELDS },
     });
 
     res.json({
       success: true,
-      data:    (data.items || []).map(mapBookData),
-      meta: {
-        page:         parseInt(page),
-        totalResults: data.totalItems || 0,
-      },
+      data:    (data.docs || []).map(mapBookFromSearch),
+      meta:    { page: parseInt(page), totalResults: data.numFound || 0 },
     });
   } catch (error) { next(error); }
 };
 
-module.exports = { getFeaturedBooks, getBookDetail, searchBooks };
+module.exports = { getFeaturedBooks, getPopularBooks, getBookDetail, searchBooks };

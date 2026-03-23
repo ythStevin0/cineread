@@ -14,7 +14,7 @@ const MovieRow = ({ title, movies, onMovieClick }) => {
 
   return (
     <div className="mb-10">
-      <h2 className="text-xl font-bold text-white mb-4 px-6">{title}</h2>
+      {title && <h2 className="text-xl font-bold text-white mb-4 px-6">{title}</h2>}
       <div className="relative group">
         {/* Scroll Left */}
         <button

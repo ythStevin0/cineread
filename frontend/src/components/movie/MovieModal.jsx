@@ -94,10 +94,10 @@ const MovieModal = ({ movie, isOpen, onClose }) => {
         )}
 
         {/* Trailer */}
-        {movie.trailerKey && (
+        {movie.trailerLink && movie.trailerLink.isYoutube && (
           <div className="mt-4 rounded-xl overflow-hidden aspect-video">
             <iframe
-              src={`https://www.youtube.com/embed/${movie.trailerKey}`}
+              src={`https://www.youtube.com/embed/${movie.trailerLink.key}`}
               className="w-full h-full"
               allowFullScreen
               title="Trailer"
@@ -105,36 +105,47 @@ const MovieModal = ({ movie, isOpen, onClose }) => {
           </div>
         )}
 
-        {/* Actions */}
-        <div className="flex gap-3 mt-6">
-          {/* Streaming Link */}
-{movie.streamingLink && (
+        <div className="flex flex-wrap gap-2 mt-6">
+          {/* Trailer Link (non-YouTube or fallback) */}
+          {movie.trailerLink && !movie.trailerLink.isYoutube && (
             <a
-              href={movie.streamingLink.url}
+              href={movie.trailerLink.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 bg-accent hover:bg-red-700 text-white text-sm font-semibold py-2.5 rounded-xl text-center transition-colors"
+              className="flex-1 bg-surface border border-border hover:border-accent text-white text-xs font-semibold py-2 rounded-lg text-center transition-colors"
             >
-              ▶ Tonton di {movie.streamingLink.platform}
+              🎬 Trailer ({movie.trailerLink.platform})
+            </a>
+          )}
+
+          {/* Streaming Link */}
+          {movie.nontonLink && (
+            <a
+              href={movie.nontonLink.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 bg-accent hover:bg-red-700 text-white text-xs font-semibold py-2 rounded-lg text-center transition-colors"
+            >
+              ▶ Tonton di {movie.nontonLink.platform}
             </a>
           )}
 
           {/* Favorite */}
           <button
             onClick={handleFavorite}
-            className={`px-4 py-2.5 rounded-xl border text-sm font-semibold transition-colors ${
+            className={`px-3 py-2 rounded-lg border text-xs font-semibold transition-colors ${
               isFav
                 ? 'bg-accent border-accent text-white'
                 : 'border-border text-gray-300 hover:border-accent hover:text-accent'
             }`}
           >
-            {isFav ? '❤️ Favorit' : '🤍 Favorit'}
+            {isFav ? '❤️' : '🤍'}
           </button>
 
           {/* Close */}
           <button
             onClick={onClose}
-            className="px-4 py-2.5 rounded-xl border border-border text-gray-400 hover:text-white text-sm transition-colors"
+            className="px-3 py-2 rounded-lg border border-border text-gray-400 hover:text-white text-xs transition-colors"
           >
             Tutup
           </button>

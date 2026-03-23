@@ -83,24 +83,23 @@ const BookModal = ({ book, isOpen, onClose }) => {
           </p>
         )}
 
-        {/* Actions */}
-        <div className="flex gap-3 mt-6 flex-wrap">
-{book.links?.readOnline && (
+        <div className="flex gap-2 mt-6 flex-wrap">
+          {book.links?.readOnline && (
             <a
               href={book.links.readOnline}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 bg-accent hover:bg-red-700 text-white text-sm font-semibold py-2.5 rounded-xl text-center transition-colors"
+              className="flex-1 bg-accent hover:bg-red-700 text-white text-xs font-semibold py-2 rounded-lg text-center transition-colors"
             >
               📖 Baca Online
             </a>
           )}
-{book.links?.buyLinks?.gramedia && (
+          {book.links?.buyLinks?.gramedia && (
             <a
               href={book.links.buyLinks.gramedia}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 bg-surface border border-border hover:border-accent text-white text-sm font-semibold py-2.5 rounded-xl text-center transition-colors"
+              className="flex-1 bg-surface border border-border hover:border-accent text-white text-xs font-semibold py-2 rounded-lg text-center transition-colors"
             >
               🛒 Gramedia
             </a>
@@ -110,14 +109,14 @@ const BookModal = ({ book, isOpen, onClose }) => {
               href={book.links.buyLinks.tokopedia}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 bg-surface border border-border hover:border-accent text-white text-sm font-semibold py-2.5 rounded-xl text-center transition-colors"
+              className="flex-1 bg-surface border border-border hover:border-accent text-white text-xs font-semibold py-2 rounded-lg text-center transition-colors"
             >
               🛒 Tokopedia
             </a>
           )}
           <button
             onClick={handleFavorite}
-            className={`px-4 py-2.5 rounded-xl border text-sm font-semibold transition-colors ${
+            className={`px-3 py-2 rounded-lg border text-xs font-semibold transition-colors ${
               isFav
                 ? 'bg-accent border-accent text-white'
                 : 'border-border text-gray-300 hover:border-accent'
@@ -127,7 +126,7 @@ const BookModal = ({ book, isOpen, onClose }) => {
           </button>
           <button
             onClick={onClose}
-            className="px-4 py-2.5 rounded-xl border border-border text-gray-400 hover:text-white text-sm transition-colors"
+            className="px-3 py-2 rounded-lg border border-border text-gray-400 hover:text-white text-xs transition-colors"
           >
             Tutup
           </button>

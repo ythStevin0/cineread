@@ -60,8 +60,7 @@ const getMovieDetail = async (req, res, next) => {
                  || videos.find(v => v.type === 'Trailer' && v.site === 'YouTube')
                  || null;
 
-    const mapped      = mapMovieData(data, data['watch/providers']);
-    mapped.trailerKey = trailer?.key || null;
+    const mapped      = mapMovieData(data, data['watch/providers'], trailer?.key);
 
     cache.set(cacheKey, mapped, 21600);
 

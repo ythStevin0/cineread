@@ -4,6 +4,7 @@ const cors    = require('cors');
 const connectDB     = require('./src/config/db');
 const errorHandler  = require('./src/middleware/errorHandler');
 const movieRoutes   = require('./src/routes/movieRoutes');
+const tvRoutes      = require('./src/routes/tvRoutes');
 const bookRoutes    = require('./src/routes/bookRoutes');
 const authRoutes    = require('./src/routes/authRoutes');
 const userRoutes    = require('./src/routes/userRoutes');
@@ -20,6 +21,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/api/movies', movieRoutes);
+app.use('/api/tv',     tvRoutes);
 app.use('/api/books',  bookRoutes);
 app.use('/api/auth',   authRoutes);
 app.use('/api/user',   userRoutes);

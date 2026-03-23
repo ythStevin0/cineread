@@ -12,7 +12,7 @@ const historySchema = new mongoose.Schema({
   },
   itemType: {
     type:     String,
-    enum:     ['movie', 'book'],
+    enum:     ['movie', 'tv', 'book'],
     required: true,
   },
   title:  { type: String, required: true },

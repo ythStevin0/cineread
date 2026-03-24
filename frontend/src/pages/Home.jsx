@@ -61,10 +61,10 @@ const Home = () => {
   useEffect(() => {
     if (user) {
       getFavorites()
-        .then((res) => setFavorites(res.data.data))
+        .then((res) => setFavorites(res.data?.data || []))
         .catch(() => {});
     }
-  }, );
+  }, [user, setFavorites]);
 
   return (
     <div className="min-h-screen bg-dark">

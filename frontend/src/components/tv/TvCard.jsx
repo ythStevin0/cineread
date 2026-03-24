@@ -20,21 +20,8 @@ const TvCard = ({ show, onClick }) => (
       <div className="absolute top-2 left-2 bg-blue-600/90 text-white text-[10px] font-bold px-1.5 py-0.5 rounded z-10">
         TV
       </div>
-      {/* Overlay gradient and buttons */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity flex flex-col justify-end p-3 gap-2">
-        <button
-          onClick={(e) => { e.stopPropagation(); onClick(show, 'show'); }}
-          className="w-full bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold py-1.5 rounded-lg transition-colors"
-        >
-          ▶ Nonton
-        </button>
-        <button
-          onClick={(e) => { e.stopPropagation(); onClick(show, 'trailer'); }}
-          className="w-full bg-white/20 hover:bg-white/30 text-white text-[10px] font-bold py-1.5 rounded-lg transition-colors backdrop-blur-sm"
-        >
-          🎬 Trailer
-        </button>
-      </div>
+      {/* Overlay gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity" />
     </div>
     <div className="mt-2 px-1">
       <p className="text-xs text-white font-medium truncate">{show.title}</p>

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { getTvDetail } from '../../api/tvApi';
 import LoadingSpinner from '../ui/LoadingSpinner';
 
-const TvModal = ({ show, isOpen, onClose, initialViewType = 'show' }) => {
+const TvModal = ({ show, isOpen, onClose }) => {
   const { user }    = useAuthStore();
   const { favorites, addFavorite: addFav, removeFavorite: removeFav } = useAppStore();
 
@@ -16,12 +16,6 @@ const TvModal = ({ show, isOpen, onClose, initialViewType = 'show' }) => {
 
   const [showData, setShowData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [viewType, setViewType]   = useState('show'); // 'show' or 'trailer'
-
-  // Reset viewType saat modal dibuka baru
-  useEffect(() => {
-    if (isOpen) setViewType(initialViewType);
-  }, [isOpen, initialViewType]);
 
   // Fetch full details saat modal dibuka
   useEffect(() => {
@@ -75,19 +69,24 @@ const TvModal = ({ show, isOpen, onClose, initialViewType = 'show' }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      {/* Top Media: Vidboxto Stream */}
+      {/* Top Media: YouTube Trailer */}
       <div className="relative w-full aspect-video overflow-hidden rounded-t-2xl bg-black">
         {isLoading ? (
           <div className="w-full h-full flex items-center justify-center bg-[#0a0a0a]">
             <LoadingSpinner />
           </div>
-        ) : (
+        ) : displayData.trailerKey ? (
           <iframe
-            src={`https://vidboxto.com/embed/tv/${displayData.id}${viewType === 'trailer' ? '?trailer=1' : ''}`}
+            src={`https://www.youtube.com/embed/${displayData.trailerKey}?autoplay=0`}
             className="w-full h-full border-0"
             allowFullScreen
-            title="Vidboxto Stream"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            title="Trailer"
           />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-[#0a0a0a] text-gray-500">
+            <p>Trailer tidak tersedia</p>
+          </div>
         )}
       </div>
 
@@ -132,24 +131,17 @@ const TvModal = ({ show, isOpen, onClose, initialViewType = 'show' }) => {
         )}
 
         <div className="flex flex-wrap gap-2 mt-6">
-          {/* Watch Options */}
-          <button
-            onClick={() => setViewType('show')}
-            className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-colors ${
-              viewType === 'show' ? 'bg-red-600 text-white' : 'bg-surface border border-border text-gray-400 hover:text-white'
-            }`}
-          >
-            ▶ Nonton Series
-          </button>
-
-          <button
-            onClick={() => setViewType('trailer')}
-            className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-colors ${
-              viewType === 'trailer' ? 'bg-blue-600 text-white' : 'bg-surface border border-border text-gray-400 hover:text-white'
-            }`}
-          >
-            🎬 Trailer
-          </button>
+          {/* External Trailer Link (Fallback) */}
+          {displayData.trailerKey && (
+            <a
+              href={`https://www.youtube.com/watch?v=${displayData.trailerKey}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors flex items-center justify-center"
+            >
+              ▶ Buka di YouTube
+            </a>
+          )}
 
           {/* Favorite */}
           <button

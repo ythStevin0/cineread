@@ -15,7 +15,23 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 app.use(cors({
-  origin:      process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Izinkan localhost untuk dev, dan FRONTEND_URL untuk prod
+    const allowed = [
+      process.env.FRONTEND_URL,
+      'http://localhost:5173',
+      'http://localhost:3000'
+    ].filter(Boolean);
+    
+    // Jika tidak ada origin (seperti mobile app atau server-to-server) atau ada di list allowed
+    if (!origin || allowed.some(url => url.startsWith(origin) || origin.startsWith(url))) {
+      callback(null, true);
+    } else {
+      // Untuk kemudahan setup, kita izinkan sementara selama masa testing jika FRONTEND_URL belum set
+      if (!process.env.FRONTEND_URL) callback(null, true);
+      else callback(new Error('Blocked by CORS'));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());

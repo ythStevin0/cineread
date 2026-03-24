@@ -75,9 +75,9 @@ const MovieModal = ({ movie, isOpen, onClose }) => {
           <div className="w-full h-full flex items-center justify-center bg-[#0a0a0a]">
             <LoadingSpinner />
           </div>
-        ) : displayData.trailerKey ? (
+        ) : displayData.trailerLink?.key ? (
           <iframe
-            src={`https://www.youtube.com/embed/${displayData.trailerKey}?autoplay=0`}
+            src={`https://www.youtube.com/embed/${displayData.trailerLink.key}?autoplay=0`}
             className="w-full h-full border-0"
             allowFullScreen
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -128,9 +128,9 @@ const MovieModal = ({ movie, isOpen, onClose }) => {
 
         <div className="flex flex-wrap gap-2 mt-6">
           {/* External Trailer Link (Fallback) */}
-          {displayData.trailerKey && (
+          {displayData.trailerLink?.key && (
             <a
-              href={`https://www.youtube.com/watch?v=${displayData.trailerKey}`}
+              href={`https://www.youtube.com/watch?v=${displayData.trailerLink.key}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors flex items-center justify-center"

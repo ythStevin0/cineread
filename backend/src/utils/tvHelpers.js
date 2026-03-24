@@ -30,11 +30,11 @@ const resolveLinks = (providersData, trailerKey, title) => {
   else if (tmdbLink) nontonLink = { platform: 'Nonton Gratis', url: tmdbLink };
   else nontonLink = { platform: 'Nonton Gratis', url: justWatchLink };
 
-  // Trailer API: Netflix → Disney+ → YouTube → Google Play → Nonton Gratis lainnya
+  // Trailer API: YouTube → Netflix → Disney+ → Google Play → Nonton Gratis lainnya
   let trailerLink = null;
-  if (hasNetflix) trailerLink = { platform: 'Netflix', url: tmdbLink };
+  if (trailerKey) trailerLink = { platform: 'YouTube', url: `https://youtube.com/watch?v=${trailerKey}`, isYoutube: true, key: trailerKey };
+  else if (hasNetflix) trailerLink = { platform: 'Netflix', url: tmdbLink };
   else if (hasDisney) trailerLink = { platform: 'Disney+', url: tmdbLink };
-  else if (trailerKey) trailerLink = { platform: 'YouTube', url: `https://youtube.com/watch?v=${trailerKey}`, isYoutube: true, key: trailerKey };
   else if (hasGooglePlay) trailerLink = { platform: 'Google Play', url: tmdbLink };
   else if (tmdbLink) trailerLink = { platform: 'Nonton Gratis lainnya', url: tmdbLink };
   else trailerLink = { platform: 'Nonton Gratis lainnya', url: justWatchLink };

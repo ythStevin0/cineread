@@ -2,9 +2,11 @@ import Modal from '../ui/Modal';
 import useAuthStore from '../../store/authStore';
 import useAppStore from '../../store/appStore';
 import { addFavorite, removeFavorite, addHistory } from '../../api/authApi';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { getMovieDetail } from '../../api/movieApi';
+import LoadingSpinner from '../ui/LoadingSpinner';
 
-const MovieModal = ({ movie, isOpen, onClose }) => {
+const MovieModal = ({ movie, isOpen, onClose, initialViewType = 'movie' }) => {
   const { user }    = useAuthStore();
   const { favorites, addFavorite: addFav, removeFavorite: removeFav } = useAppStore();
 
@@ -12,17 +14,41 @@ const MovieModal = ({ movie, isOpen, onClose }) => {
     (f) => f.itemId === String(movie?.id) && f.itemType === 'movie'
   );
 
+  const [movieData, setMovieData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [viewType, setViewType]   = useState('movie'); // 'movie' or 'trailer'
+
+  // Reset viewType saat modal dibuka baru
+  useEffect(() => {
+    if (isOpen) setViewType(initialViewType);
+  }, [isOpen, initialViewType]);
+
+  // Fetch full details saat modal dibuka
+  useEffect(() => {
+    if (isOpen && movie?.id) {
+      setIsLoading(true);
+      getMovieDetail(movie.id)
+        .then(res => {
+          if (res.data?.data) setMovieData(res.data.data);
+        })
+        .catch(err => console.error("Gagal mengambil detail:", err))
+        .finally(() => setIsLoading(false));
+    }
+  }, [isOpen, movie]);
+
+  const displayData = movieData || movie;
+
   // Catat history saat modal dibuka
   useEffect(() => {
-    if (isOpen && movie && user) {
+    if (isOpen && displayData && user) {
       addHistory({
-        itemId:   String(movie.id),
+        itemId:   String(displayData.id),
         itemType: 'movie',
-        title:    movie.title,
-        poster:   movie.poster,
+        title:    displayData.title,
+        poster:   displayData.poster,
       }).catch(() => {});
     }
-  }, [isOpen, movie, user]);
+  }, [isOpen, displayData, user]);
 
   const handleFavorite = async () => {
     if (!user) return alert('Login dulu untuk menyimpan favorit!');
@@ -49,35 +75,43 @@ const MovieModal = ({ movie, isOpen, onClose }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      {/* Backdrop image */}
-      {movie.backdrop && (
-        <div className="relative h-48 overflow-hidden rounded-t-2xl">
-          <img src={movie.backdrop} alt={movie.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-        </div>
-      )}
+      {/* Top Media: Vidboxto Stream */}
+      <div className="relative w-full aspect-video overflow-hidden rounded-t-2xl bg-black">
+        {isLoading ? (
+          <div className="w-full h-full flex items-center justify-center bg-[#0a0a0a]">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          <iframe
+            src={`https://vidboxto.com/embed/movie/${displayData.id}${viewType === 'trailer' ? '?trailer=1' : ''}`}
+            className="w-full h-full border-0"
+            allowFullScreen
+            title="Vidboxto Stream"
+          />
+        )}
+      </div>
 
       <div className="p-6">
         <div className="flex gap-4">
           {/* Poster */}
-          {movie.poster && (
+          {displayData.poster && (
             <img
-              src={movie.poster}
-              alt={movie.title}
+              src={displayData.poster}
+              alt={displayData.title}
               className="w-24 h-36 object-cover rounded-lg flex-shrink-0 -mt-16 border-2 border-border shadow-xl"
             />
           )}
           <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold text-white">{movie.title}</h2>
+            <h2 className="text-xl font-bold text-white">{displayData.title}</h2>
             <div className="flex items-center gap-3 mt-1 text-sm text-gray-400 flex-wrap">
-              <span>⭐ {movie.rating || 'N/A'}</span>
-              <span>📅 {movie.releaseYear}</span>
-              {movie.runtime && <span>⏱ {movie.runtime}</span>}
+              <span>⭐ {displayData.rating || 'N/A'}</span>
+              <span>📅 {displayData.releaseYear}</span>
+              {displayData.runtime && <span>⏱ {displayData.runtime}</span>}
             </div>
-            {movie.genres?.length > 0 && (
+            {displayData.genres?.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
-                {movie.genres.map((g) => (
-                  <span key={g} className="text-xs bg-surface border border-border px-2 py-0.5 rounded-full text-gray-300">
+                {displayData.genres.map((g) => (
+                  <span key={g} className="text-xs bg-[surface] border border-border px-2 py-0.5 rounded-full text-gray-300">
                     {g}
                   </span>
                 ))}
@@ -87,48 +121,31 @@ const MovieModal = ({ movie, isOpen, onClose }) => {
         </div>
 
         {/* Overview */}
-        {movie.overview && (
+        {displayData.overview && (
           <p className="mt-4 text-sm text-gray-300 leading-relaxed line-clamp-4">
-            {movie.overview}
+            {displayData.overview}
           </p>
         )}
 
-        {/* Trailer */}
-        {movie.trailerLink && movie.trailerLink.isYoutube && (
-          <div className="mt-4 rounded-xl overflow-hidden aspect-video">
-            <iframe
-              src={`https://www.youtube.com/embed/${movie.trailerLink.key}`}
-              className="w-full h-full"
-              allowFullScreen
-              title="Trailer"
-            />
-          </div>
-        )}
-
         <div className="flex flex-wrap gap-2 mt-6">
-          {/* Trailer Link (non-YouTube or fallback) */}
-          {movie.trailerLink && !movie.trailerLink.isYoutube && (
-            <a
-              href={movie.trailerLink.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 bg-surface border border-border hover:border-accent text-white text-xs font-semibold py-2 rounded-lg text-center transition-colors"
-            >
-              🎬 Trailer ({movie.trailerLink.platform})
-            </a>
-          )}
+          {/* Watch Options */}
+          <button
+            onClick={() => setViewType('movie')}
+            className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-colors ${
+              viewType === 'movie' ? 'bg-red-600 text-white' : 'bg-surface border border-border text-gray-400 hover:text-white'
+            }`}
+          >
+            ▶ Nonton Movie
+          </button>
 
-          {/* Streaming Link */}
-          {movie.nontonLink && (
-            <a
-              href={movie.nontonLink.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 bg-accent hover:bg-red-700 text-white text-xs font-semibold py-2 rounded-lg text-center transition-colors"
-            >
-              ▶ Tonton di {movie.nontonLink.platform}
-            </a>
-          )}
+          <button
+            onClick={() => setViewType('trailer')}
+            className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-colors ${
+              viewType === 'trailer' ? 'bg-blue-600 text-white' : 'bg-surface border border-border text-gray-400 hover:text-white'
+            }`}
+          >
+            🎬 Trailer
+          </button>
 
           {/* Favorite */}
           <button

@@ -2,10 +2,10 @@ import StarRating from '../ui/StarRating';
 
 const BookCard = ({ book, onClick }) => (
   <div
-    className="flex-shrink-0 w-32 cursor-pointer group"
+    className="flex-shrink-0 w-32 cursor-pointer group/card transition-colors duration-300"
     onClick={() => onClick(book)}
   >
-    <div className="relative rounded-xl overflow-hidden bg-surface aspect-[2/3]">
+    <div className="relative rounded-xl overflow-hidden bg-surface aspect-[2/3] border-2 border-transparent group-hover/card:border-accent transition-colors duration-300 shadow-lg group-hover/card:shadow-accent/40">
       {book.cover ? (
         <img
           src={book.cover}
@@ -16,6 +16,8 @@ const BookCard = ({ book, onClick }) => (
       ) : (
         <div className="w-full h-full flex items-center justify-center text-4xl">📚</div>
       )}
+      {/* Overlay gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity" />
     </div>
     <div className="mt-2 px-1">
       <p className="text-xs text-white font-medium truncate">{book.title}</p>

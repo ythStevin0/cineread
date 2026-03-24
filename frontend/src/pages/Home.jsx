@@ -27,9 +27,17 @@ const Home = () => {
   const [loading,      setLoading]      = useState(true);
   const [search,       setSearch]       = useState(null);
 
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedMovie, setSelectedMovie] = useState(null); // { item, viewType }
   const [selectedTv,    setSelectedTv]    = useState(null);
   const [selectedBook,  setSelectedBook]  = useState(null);
+
+  const handleMovieClick = (movie, viewType = 'movie') => {
+    setSelectedMovie({ item: movie, viewType });
+  };
+
+  const handleTvClick = (show, viewType = 'show') => {
+    setSelectedTv({ item: show, viewType });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,14 +100,14 @@ const Home = () => {
               <MovieRow
                 title={`🎬 Film (${search.movies.length})`}
                 movies={search.movies}
-                onMovieClick={setSelectedMovie}
+                onMovieClick={handleMovieClick}
               />
             )}
             {search.tv?.length > 0 && (
               <TvRow
                 title={`📺 Serial TV (${search.tv.length})`}
                 shows={search.tv}
-                onShowClick={setSelectedTv}
+                onShowClick={handleTvClick}
               />
             )}
             {search.books?.length > 0 && (
@@ -133,7 +141,7 @@ const Home = () => {
                 </svg>
                 <h2 className="text-xl font-bold text-white">Trending Film Minggu Ini</h2>
               </div>
-              <MovieRow movies={trending} onMovieClick={setSelectedMovie} />
+              <MovieRow movies={trending} onMovieClick={handleMovieClick} />
             </section>
 
             {/* Popular Movies */}
@@ -151,7 +159,7 @@ const Home = () => {
                 </svg>
                 <h2 className="text-xl font-bold text-white">Film Popular</h2>
               </div>
-              <MovieRow movies={popular} onMovieClick={setSelectedMovie} />
+              <MovieRow movies={popular} onMovieClick={handleMovieClick} />
             </section>
 
             {/* Trending TV */}
@@ -163,7 +171,7 @@ const Home = () => {
                 </svg>
                 <h2 className="text-xl font-bold text-white">Trending Serial TV</h2>
               </div>
-              <TvRow shows={trendingTv} onShowClick={setSelectedTv} />
+              <TvRow shows={trendingTv} onShowClick={handleTvClick} />
             </section>
 
             {/* Popular TV */}
@@ -174,7 +182,7 @@ const Home = () => {
                 </svg>
                 <h2 className="text-xl font-bold text-white">Serial TV Popular</h2>
               </div>
-              <TvRow shows={popularTv} onShowClick={setSelectedTv} />
+              <TvRow shows={popularTv} onShowClick={handleTvClick} />
             </section>
 
             {/* Featured Books */}
@@ -206,12 +214,14 @@ const Home = () => {
 
       {/* Modals */}
       <MovieModal
-        movie={selectedMovie}
+        movie={selectedMovie?.item}
+        initialViewType={selectedMovie?.viewType}
         isOpen={!!selectedMovie}
         onClose={() => setSelectedMovie(null)}
       />
       <TvModal
-        show={selectedTv}
+        show={selectedTv?.item}
+        initialViewType={selectedTv?.viewType}
         isOpen={!!selectedTv}
         onClose={() => setSelectedTv(null)}
       />

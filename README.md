@@ -7,7 +7,7 @@ Platform katalog premium untuk trailer film dan sinopsis buku.
 | Folder | Teknologi | Hosting |
 |---|---|---|
 | `/backend` | Node.js + Express + MongoDB | Railway |
-| `/frontend` | React + Vite + Tailwind | Netlify |
+| `/frontend` | React + Vite + Tailwind | Vercel |
 
 ## Sprint Progress
 
@@ -33,7 +33,7 @@ Platform katalog premium untuk trailer film dan sinopsis buku.
 - **Micro-Interaction Polish**: Penyederhanaan efek hover pada direktori Home untuk meminimalisasi *jello-effect*, mempertahankan gaya visual batas yang menyorot (*accent border*).
 
 ### 🚀 Deployment Update
-- Frontend successfully deployed to Netlify.
+- Frontend deployed to Vercel.
 
 ---
 *CineRead v2.0-beta — Dikembangkan dengan ❤️*

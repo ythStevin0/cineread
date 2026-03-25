@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-dark border-t border-gray-800 py-6 px-4 md:px-8 mt-auto">
+    <footer className="bg-[#0a0a0a] border-t border-[#2a2a2a] py-6 px-4 md:px-8 mt-auto">
       <div className="max-w-7xl mx-auto text-center">
         <div className="text-sm text-gray-400 mb-1">
           © 2026 CineRead. Dibuat dengan ❤️ oleh Stevino. Hak Cipta Dilindungi.

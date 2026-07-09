@@ -20,10 +20,6 @@ const resolveBookLinks = (doc) => {
 
   return {
     readOnline: olKey ? `${OL_BASE}${olKey}` : null,
-    buyLinks: {
-      gramedia:  `https://www.gramedia.com/search/?q=${searchQuery}`,
-      tokopedia: `https://www.tokopedia.com/search?st=product&q=${encodeURIComponent(title)}`,
-    },
     isFullyReadable: doc.public_scan_b === true || false,
   };
 };
@@ -72,10 +68,6 @@ const mapBookFromDetail = (work, editions = []) => {
     isbn:          bestEdition.isbn_13?.[0] || bestEdition.isbn_10?.[0] || null,
     links: {
       readOnline: work.key ? `${OL_BASE}${work.key}` : null,
-      buyLinks: {
-        gramedia:  `https://www.gramedia.com/search/?q=${encodeURIComponent(work.title || '')}`,
-        tokopedia: `https://www.tokopedia.com/search?st=product&q=${encodeURIComponent(work.title || '')}`,
-      },
       isFullyReadable: false,
     },
   };

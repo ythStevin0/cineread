@@ -21,15 +21,12 @@ const resolveLinks = (providersData, trailers, title) => {
   const hasGooglePlay = [...buy, ...rent].some(p => p.provider_id === 3 || p.provider_name?.includes('Google Play'));
 
   const tmdbLink = regionData?.link || null;
-  const searchQuery = encodeURIComponent(title);
-  const justWatchLink = `https://www.justwatch.com/id/search?q=${searchQuery}`;
 
   // Nonton API Priority
   let nontonLink = null;
   if (hasNetflix) nontonLink = { platform: 'Netflix', url: tmdbLink };
   else if (hasDisney) nontonLink = { platform: 'Disney+', url: tmdbLink };
   else if (tmdbLink) nontonLink = { platform: 'Nonton Gratis', url: tmdbLink };
-  else nontonLink = { platform: 'Nonton Gratis', url: justWatchLink };
 
   // Best Trailer found: prioritize Official YouTube trailers
   const officialTrailers = trailers.filter(t => t.type === 'Trailer' && t.site === 'YouTube' && t.official);
@@ -44,7 +41,6 @@ const resolveLinks = (providersData, trailers, title) => {
   else if (hasDisney) trailerLink = { platform: 'Disney+', url: tmdbLink };
   else if (hasGooglePlay) trailerLink = { platform: 'Google Play', url: tmdbLink };
   else if (tmdbLink) trailerLink = { platform: 'Nonton Gratis lainnya', url: tmdbLink };
-  else trailerLink = { platform: 'Nonton Gratis lainnya', url: justWatchLink };
 
   const allYoutubeTrailers = [...officialTrailers, ...otherTrailers].map(t => ({ name: t.name, key: t.key, type: t.type }));
 

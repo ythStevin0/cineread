@@ -94,26 +94,7 @@ const BookModal = ({ book, isOpen, onClose }) => {
               📖 Baca Online
             </a>
           )}
-          {book.links?.buyLinks?.gramedia && (
-            <a
-              href={book.links.buyLinks.gramedia}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 bg-surface border border-border hover:border-accent text-white text-xs font-semibold py-2 rounded-lg text-center transition-colors"
-            >
-              🛒 Gramedia
-            </a>
-          )}
-          {book.links?.buyLinks?.tokopedia && (
-            <a
-              href={book.links.buyLinks.tokopedia}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 bg-surface border border-border hover:border-accent text-white text-xs font-semibold py-2 rounded-lg text-center transition-colors"
-            >
-              🛒 Tokopedia
-            </a>
-          )}
+
           <button
             onClick={handleFavorite}
             className={`px-3 py-2 rounded-lg border text-xs font-semibold transition-colors ${

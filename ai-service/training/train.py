@@ -16,8 +16,22 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 
-# Tambah parent directory ke path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+# Tambah parent directory ke path (Aman untuk Colab/Jupyter)
+import sys
+import os
+
+try:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    sys.path.insert(0, os.path.join(current_dir, '..'))
+except NameError:
+    # Jika dijalankan di dalam cell Colab, __file__ tidak ada.
+    # Kita asumsikan folder ai-service di-upload ke /content/ai-service
+    current_dir = os.getcwd()
+    if os.path.exists('/content/ai-service'):
+        sys.path.insert(0, '/content/ai-service')
+        current_dir = '/content/ai-service/training'
+    else:
+        sys.path.insert(0, current_dir)
 
 from models.sasrec import SASRec
 from models.ncf import NCF
@@ -29,7 +43,7 @@ from data.loader import (
 from training.evaluate import evaluate_topk
 
 
-SAVE_DIR = os.path.join(os.path.dirname(__file__), '..', 'saved_models')
+SAVE_DIR = os.path.join(current_dir, '..', 'saved_models')
 
 
 def train_ncf(train_df, val_df, num_users, num_items, epochs=10, batch_size=256, lr=0.001):

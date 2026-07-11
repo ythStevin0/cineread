@@ -15,8 +15,11 @@ import pandas as pd
 import numpy as np
 from collections import defaultdict
 
-# Direktori data
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))
+# Direktori data (Aman untuk Colab/Jupyter)
+try:
+    DATA_DIR = os.path.dirname(os.path.abspath(__file__))
+except NameError:
+    DATA_DIR = os.getcwd()
 
 
 def download_movielens(size='25m', data_dir=None):

@@ -31,7 +31,7 @@ historySchema.statics.addHistory = async function (userId, itemData) {
   await this.findOneAndUpdate(
     { user: userId, itemId: itemData.itemId, itemType: itemData.itemType },
     { ...itemData, user: userId, viewedAt: new Date() },
-    { upsert: true, new: true }
+    { upsert: true, returnDocument: 'after' }
   );
 
   // Hapus history lebih dari 50

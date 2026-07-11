@@ -5,6 +5,7 @@ import { addFavorite, removeFavorite, addHistory } from '../../api/authApi';
 import { useEffect, useState } from 'react';
 import { getMovieDetail } from '../../api/movieApi';
 import LoadingSpinner from '../ui/LoadingSpinner';
+import SimilarItems from '../recommendation/SimilarItems';
 
 const MovieModal = ({ movie, isOpen, onClose }) => {
   const { user }    = useAuthStore();
@@ -19,16 +20,27 @@ const MovieModal = ({ movie, isOpen, onClose }) => {
 
   // Fetch full details saat modal dibuka
   useEffect(() => {
-    if (isOpen && movie?.id) {
-      setIsLoading(true);
-      getMovieDetail(movie.id)
-        .then(res => {
-          if (res.data?.data) setMovieData(res.data.data);
-        })
-        .catch(err => console.error("Gagal mengambil detail:", err))
-        .finally(() => setIsLoading(false));
-    }
-  }, [isOpen, movie]);
+    let isMounted = true;
+
+    const fetchDetail = async () => {
+      if (isOpen && movie?.id) {
+        setIsLoading(true);
+        try {
+          const res = await getMovieDetail(movie.id);
+          if (isMounted && res.data?.data) {
+            setMovieData(res.data.data);
+          }
+        } catch (err) {
+          console.error("Gagal mengambil detail:", err);
+        } finally {
+          if (isMounted) setIsLoading(false);
+        }
+      }
+    };
+
+    fetchDetail();
+    return () => { isMounted = false; };
+  }, [isOpen, movie?.id]);
 
   const displayData = movieData || movie;
 
@@ -204,6 +216,23 @@ const MovieModal = ({ movie, isOpen, onClose }) => {
             Tutup
           </button>
         </div>
+
+        {/* Film Serupa — AI Recommendation */}
+        <SimilarItems
+          tmdbId={displayData.id}
+          mediaType="movie"
+          onItemClick={(item) => {
+            // Set item baru sebagai movieData, modal akan re-fetch detail-nya
+            setMovieData(null);
+            setIsLoading(true);
+            getMovieDetail(item.id)
+              .then(res => {
+                if (res.data?.data) setMovieData(res.data.data);
+              })
+              .catch(() => {})
+              .finally(() => setIsLoading(false));
+          }}
+        />
       </div>
     </Modal>
   );

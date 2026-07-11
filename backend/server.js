@@ -7,7 +7,8 @@ const movieRoutes   = require('./src/routes/movieRoutes');
 const tvRoutes      = require('./src/routes/tvRoutes');
 const bookRoutes    = require('./src/routes/bookRoutes');
 const authRoutes    = require('./src/routes/authRoutes');
-const userRoutes    = require('./src/routes/userRoutes');
+const userRoutes      = require('./src/routes/userRoutes');
+const recommendRoutes = require('./src/routes/recommendRoutes');
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
@@ -43,7 +44,8 @@ app.use('/api/movies', movieRoutes);
 app.use('/api/tv',     tvRoutes);
 app.use('/api/books',  bookRoutes);
 app.use('/api/auth',   authRoutes);
-app.use('/api/user',   userRoutes);
+app.use('/api/user',      userRoutes);
+app.use('/api/recommend', recommendRoutes);
 
 app.get('/health', (req, res) => {
   res.status(200).json({

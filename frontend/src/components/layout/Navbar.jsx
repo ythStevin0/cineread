@@ -43,8 +43,8 @@ const Navbar = ({ onSearchResults }) => {
     <nav className="fixed top-0 left-0 right-0 z-40 glass px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-accent flex-shrink-0">
-          Cine<span className="text-white">Read</span>
+        <Link to="/" className="text-2xl font-bold text-accent flex-shrink-0 drop-shadow-none shadow-none" style={{ textShadow: 'none !important', filter: 'none !important', boxShadow: 'none !important', WebkitFilter: 'none !important' }}>
+          Cine<span className="text-white" style={{ textShadow: 'none !important' }}>Read</span>
         </Link>
 
         {/* Search */}

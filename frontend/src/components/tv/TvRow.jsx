@@ -1,8 +1,8 @@
-import { useRef } from 'react';
+import useDraggableScroll from '../../hooks/useDraggableScroll';
 import TvCard from './TvCard';
 
 const TvRow = ({ title, shows, onShowClick }) => {
-  const rowRef = useRef(null);
+  const { ref: rowRef, events, isDragging } = useDraggableScroll();
 
   const scroll = (dir) => {
     if (rowRef.current) {
@@ -27,7 +27,10 @@ const TvRow = ({ title, shows, onShowClick }) => {
         {/* Cards */}
         <div
           ref={rowRef}
-          className="flex gap-4 overflow-x-auto scroll-hide px-6 pb-2"
+          {...events}
+          className={`flex gap-4 overflow-x-auto scroll-hide px-6 pb-2 select-none ${
+            isDragging ? 'cursor-grabbing' : 'cursor-grab'
+          }`}
         >
           {shows.map((show) => (
             <TvCard

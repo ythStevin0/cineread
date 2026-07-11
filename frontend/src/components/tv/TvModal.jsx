@@ -5,6 +5,7 @@ import { addFavorite, removeFavorite, addHistory } from '../../api/authApi';
 import { useEffect, useState } from 'react';
 import { getTvDetail } from '../../api/tvApi';
 import LoadingSpinner from '../ui/LoadingSpinner';
+import SimilarItems from '../recommendation/SimilarItems';
 
 const TvModal = ({ show, isOpen, onClose }) => {
   const { user }    = useAuthStore();
@@ -19,16 +20,27 @@ const TvModal = ({ show, isOpen, onClose }) => {
 
   // Fetch full details saat modal dibuka
   useEffect(() => {
-    if (isOpen && show?.id) {
-      setIsLoading(true);
-      getTvDetail(show.id)
-        .then(res => {
-          if (res.data?.data) setShowData(res.data.data);
-        })
-        .catch(err => console.error("Gagal mengambil detail:", err))
-        .finally(() => setIsLoading(false));
-    }
-  }, [isOpen, show]);
+    let isMounted = true;
+    
+    const fetchDetail = async () => {
+      if (isOpen && show?.id) {
+        setIsLoading(true);
+        try {
+          const res = await getTvDetail(show.id);
+          if (isMounted && res.data?.data) {
+            setShowData(res.data.data);
+          }
+        } catch (err) {
+          console.error("Gagal mengambil detail:", err);
+        } finally {
+          if (isMounted) setIsLoading(false);
+        }
+      }
+    };
+
+    fetchDetail();
+    return () => { isMounted = false; };
+  }, [isOpen, show?.id]);
 
   const displayData = showData || show;
 
@@ -207,6 +219,22 @@ const TvModal = ({ show, isOpen, onClose }) => {
             Tutup
           </button>
         </div>
+
+        {/* Serial Serupa — AI Recommendation */}
+        <SimilarItems
+          tmdbId={displayData.id}
+          mediaType="tv"
+          onItemClick={(item) => {
+            setShowData(null);
+            setIsLoading(true);
+            getTvDetail(item.id)
+              .then(res => {
+                if (res.data?.data) setShowData(res.data.data);
+              })
+              .catch(() => {})
+              .finally(() => setIsLoading(false));
+          }}
+        />
       </div>
     </Modal>
   );

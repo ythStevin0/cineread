@@ -1,8 +1,8 @@
-import { useRef } from 'react';
+import useDraggableScroll from '../../hooks/useDraggableScroll';
 import BookCard from './BookCard';
 
 const BookRow = ({ title, books, onBookClick }) => {
-  const rowRef = useRef(null);
+  const { ref: rowRef, events, isDragging } = useDraggableScroll();
 
   const scroll = (dir) => {
     if (rowRef.current) {
@@ -25,7 +25,10 @@ const BookRow = ({ title, books, onBookClick }) => {
 
         <div
           ref={rowRef}
-          className="flex gap-4 overflow-x-auto scroll-hide px-6 pb-2"
+          {...events}
+          className={`flex gap-4 overflow-x-auto scroll-hide px-6 pb-2 select-none ${
+            isDragging ? 'cursor-grabbing' : 'cursor-grab'
+          }`}
         >
           {books.map((book) => (
             <BookCard

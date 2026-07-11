@@ -7,6 +7,7 @@ import MovieModal from '../components/movie/MovieModal';
 import TvModal from '../components/tv/TvModal';
 import BookModal from '../components/book/BookModal';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import RecommendationSection from '../components/recommendation/RecommendationSection';
 import { getTrendingMovies, getPopularMovies } from '../api/movieApi';
 import { getTrendingTv, getPopularTv } from '../api/tvApi';
 import { getFeaturedBooks, getPopularBooks } from '../api/bookApi';
@@ -125,6 +126,13 @@ const Home = () => {
                 Temukan film, serial TV &amp; buku terbaik untuk hari ini
               </p>
             </div>
+
+            {/* AI Recommendation Section */}
+            <RecommendationSection 
+              onMovieClick={setSelectedMovie} 
+              onTvClick={setSelectedTv} 
+            />
+
             {/* Trending Movies */}
             <section className="mb-10">
               <div className="flex items-center gap-2 mb-4 px-6">

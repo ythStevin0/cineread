@@ -221,6 +221,20 @@ const TvModal = ({ show, isOpen, onClose }) => {
           </button>
         </div>
 
+        {/* Crew & Meta */}
+        <div className="mt-8 mb-[-1rem] space-y-1">
+          {displayData.creator && (
+             <p className="text-sm text-gray-400">
+                Kreator: <span className="text-white font-semibold">{displayData.creator}</span>
+             </p>
+          )}
+          {displayData.studios && (
+             <p className="text-sm text-gray-400">
+                Studio: <span className="text-white font-semibold">{displayData.studios}</span>
+             </p>
+          )}
+        </div>
+
         {/* Pemeran Film */}
         <CastRow cast={displayData.cast} />
 

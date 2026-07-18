@@ -218,6 +218,25 @@ const MovieModal = ({ movie, isOpen, onClose }) => {
           </button>
         </div>
 
+        {/* Crew & Meta */}
+        <div className="mt-8 mb-[-1rem] space-y-1">
+          {displayData.director && (
+             <p className="text-sm text-gray-400">
+                Sutradara: <span className="text-white font-semibold">{displayData.director}</span>
+             </p>
+          )}
+          {displayData.writer && (
+             <p className="text-sm text-gray-400">
+                Penulis: <span className="text-white font-semibold">{displayData.writer}</span>
+             </p>
+          )}
+          {displayData.studios && (
+             <p className="text-sm text-gray-400">
+                Studio: <span className="text-white font-semibold">{displayData.studios}</span>
+             </p>
+          )}
+        </div>
+
         {/* Pemeran Film */}
         <CastRow cast={displayData.cast} />
 

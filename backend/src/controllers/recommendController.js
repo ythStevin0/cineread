@@ -88,7 +88,7 @@ const getPersonalRecommendations = async (req, res, next) => {
     // 1. Ambil data user
     const [history, favorites] = await Promise.all([
       History.find({ user: userId }).sort({ viewedAt: -1 }).limit(20),
-      Favorite.find({ user: userId }),
+      Favorite.find({ user: userId }).sort({ createdAt: -1 }),
     ]);
 
     // Jika user belum punya history, kembalikan array kosong
@@ -108,7 +108,7 @@ const getPersonalRecommendations = async (req, res, next) => {
     favorites.forEach(f => {
       if (f.itemType === 'movie' || f.itemType === 'tv') {
         seenItems.add(f.itemId);
-        sourceItems.push({ tmdbId: Number(f.itemId), weight: 3, type: f.itemType });
+        sourceItems.push({ tmdbId: Number(f.itemId), weight: 3, type: f.itemType, date: f.createdAt });
       }
     });
 
@@ -116,9 +116,12 @@ const getPersonalRecommendations = async (req, res, next) => {
     history.forEach(h => {
       if ((h.itemType === 'movie' || h.itemType === 'tv') && !seenItems.has(h.itemId)) {
         seenItems.add(h.itemId);
-        sourceItems.push({ tmdbId: Number(h.itemId), weight: 1, type: h.itemType });
+        sourceItems.push({ tmdbId: Number(h.itemId), weight: 1, type: h.itemType, date: h.viewedAt });
       }
     });
+
+    // Urutkan sourceItems berdasarkan waktu terbaru
+    sourceItems.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     // 3. Ambil similar items dari AI data untuk setiap source
     const candidateMap = new Map(); // tmdbId → { score, mediaType }

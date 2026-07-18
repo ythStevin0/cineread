@@ -21,9 +21,9 @@ const getPopularMovies = async (req, res, next) => {
 const getMovieDetail = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const { data } = await fetchFromTmdb(`/movie/${id}`, { append_to_response: 'videos,watch/providers' }, `movies:detail:${id}`, 21600);
+    const { data } = await fetchFromTmdb(`/movie/${id}`, { append_to_response: 'videos,watch/providers,credits' }, `movies:detail:${id}`, 21600);
     const videos = data.videos?.results || [];
-    const mapped = mapMovieData(data, data['watch/providers'], videos);
+    const mapped = mapMovieData(data, data['watch/providers'], videos, data.credits);
     res.json({ success: true, data: mapped });
   } catch (error) {
     if (error.response?.status === 404) {

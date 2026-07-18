@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { getMovieDetail } from '../../api/movieApi';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import SimilarItems from '../recommendation/SimilarItems';
+import CastRow from '../ui/CastRow';
 
 const MovieModal = ({ movie, isOpen, onClose }) => {
   const { user }    = useAuthStore();
@@ -216,6 +217,9 @@ const MovieModal = ({ movie, isOpen, onClose }) => {
             Tutup
           </button>
         </div>
+
+        {/* Pemeran Film */}
+        <CastRow cast={displayData.cast} />
 
         {/* Film Serupa — AI Recommendation */}
         <SimilarItems

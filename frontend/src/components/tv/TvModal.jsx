@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { getTvDetail } from '../../api/tvApi';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import SimilarItems from '../recommendation/SimilarItems';
+import CastRow from '../ui/CastRow';
 
 const TvModal = ({ show, isOpen, onClose }) => {
   const { user }    = useAuthStore();
@@ -219,6 +220,9 @@ const TvModal = ({ show, isOpen, onClose }) => {
             Tutup
           </button>
         </div>
+
+        {/* Pemeran Film */}
+        <CastRow cast={displayData.cast} />
 
         {/* Serial Serupa — AI Recommendation */}
         <SimilarItems

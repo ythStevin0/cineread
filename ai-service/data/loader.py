@@ -44,7 +44,7 @@ def download_movielens(size='25m', data_dir=None):
         data_dir = DATA_DIR
 
     urls = {
-        '100k': 'https://files.grouplens.org/datasets/movielens/ml-100k.zip',
+        '100k': 'https://files.grouplens.org/datasets/movielens/ml-latest-small.zip',
         '1m':   'https://files.grouplens.org/datasets/movielens/ml-1m.zip',
         '25m':  'https://files.grouplens.org/datasets/movielens/ml-25m.zip',
     }
@@ -54,10 +54,11 @@ def download_movielens(size='25m', data_dir=None):
         raise ValueError(f"Ukuran dataset '{size}' tidak dikenali. Pilih: {list(urls.keys())}")
 
     zip_path = os.path.join(data_dir, f'ml-{size}.zip')
-    extract_path = os.path.join(data_dir, f'ml-{size}')
+    folder_name = 'ml-latest-small' if size == '100k' else f'ml-{size}'
+    extract_path = os.path.join(data_dir, folder_name)
 
     if os.path.exists(extract_path):
-        print(f"✅ Dataset ml-{size} sudah ada di {extract_path}")
+        print(f"✅ Dataset {folder_name} sudah ada di {extract_path}")
         return extract_path
 
     print(f"⬇️ Mengunduh MovieLens {size}...")

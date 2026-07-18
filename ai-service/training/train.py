@@ -178,7 +178,7 @@ def main():
     parser = argparse.ArgumentParser(description='Training model rekomendasi CineRead')
     parser.add_argument('--model', type=str, default='all', choices=['sasrec', 'ncf', 'all'],
                         help='Model yang akan di-training')
-    parser.add_argument('--dataset', type=str, default='25m', choices=['100k', '1m', '25m'],
+    parser.add_argument('--dataset', type=str, default='100k', choices=['100k', '1m', '25m'],
                         help='Ukuran dataset MovieLens')
     parser.add_argument('--epochs', type=int, default=10, help='Jumlah epoch training')
     parser.add_argument('--batch_size', type=int, default=256, help='Batch size')

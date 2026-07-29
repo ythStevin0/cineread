@@ -14,6 +14,7 @@ const useAuthStore = create((set) => ({
     localStorage.removeItem('cineread_user');
     localStorage.removeItem('cineread_token');
     set({ user: null, token: null });
+    window.location.href = '/';
   },
 }));
 

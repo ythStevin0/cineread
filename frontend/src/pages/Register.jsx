@@ -17,7 +17,7 @@ const Register = () => {
     try {
       const res = await register(form);
       setAuth(res.data.user, res.data.token);
-      navigate('/');
+      window.location.href = '/';
     } catch (err) {
       setError(err.response?.data?.message || 'Registrasi gagal');
     } finally {

@@ -17,7 +17,7 @@ const Login = () => {
     try {
       const res = await login(form);
       setAuth(res.data.user, res.data.token);
-      navigate('/');
+      window.location.href = '/';
     } catch (err) {
       setError(err.response?.data?.message || 'Login gagal');
     } finally {

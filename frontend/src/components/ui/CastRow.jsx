@@ -1,7 +1,7 @@
 import { useDraggableScroll } from '../../hooks/useDraggableScroll';
 
 const CastRow = ({ cast }) => {
-  const scrollRef = useDraggableScroll();
+  const { ref: scrollRef, events } = useDraggableScroll();
 
   if (!cast || cast.length === 0) return null;
 
@@ -10,14 +10,15 @@ const CastRow = ({ cast }) => {
       <h3 className="text-lg font-bold text-white mb-4">Pemeran Film</h3>
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none"
+        {...events}
+        className="flex gap-3 md:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x cursor-grab active:cursor-grabbing select-none"
       >
         {cast.map((actor) => (
           <div
             key={actor.id}
-            className="flex-none w-32 bg-[#1a1c29] rounded-xl overflow-hidden border border-white/5 shadow-lg snap-start group"
+            className="flex-none w-28 md:w-32 bg-[#1a1c29] rounded-xl overflow-hidden border border-white/5 shadow-lg snap-start group"
           >
-            <div className="w-full h-44 bg-gray-800 relative overflow-hidden">
+            <div className="w-full h-36 md:h-44 bg-gray-800 relative overflow-hidden">
               {actor.profilePath ? (
                 <img
                   src={actor.profilePath}

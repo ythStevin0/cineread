@@ -102,6 +102,7 @@ const Navbar = ({ onSearchResults }) => {
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-1.5 text-sm bg-surface border border-border px-3 py-1.5 rounded-full hover:border-accent transition-colors"
+                title="Logout"
               >
                 {/* Logout icon */}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
@@ -109,24 +110,32 @@ const Navbar = ({ onSearchResults }) => {
                   <polyline points="16 17 21 12 16 7"/>
                   <line x1="21" y1="12" x2="9" y2="12"/>
                 </svg>
-                <span>Logout</span>
+                <span className="hidden sm:inline">Logout</span>
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="flex items-center gap-1.5 text-sm text-gray-300 hover:text-white transition-colors">
+              <Link to="/login" className="flex items-center gap-1.5 text-sm text-gray-300 hover:text-white transition-colors" title="Login">
                 {/* User icon */}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                   <circle cx="12" cy="7" r="4"/>
                 </svg>
-                Login
+                <span className="hidden sm:inline">Login</span>
               </Link>
               <Link
                 to="/register"
-                className="flex items-center gap-1.5 text-sm bg-accent px-4 py-1.5 rounded-full hover:bg-red-700 transition-colors"
+                className="flex items-center gap-1.5 text-sm bg-accent px-3 sm:px-4 py-1.5 rounded-full hover:bg-red-700 transition-colors"
+                title="Daftar"
               >
-                Daftar
+                {/* Register/User Plus icon */}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="8.5" cy="7" r="4"/>
+                  <line x1="20" y1="8" x2="20" y2="14"/>
+                  <line x1="23" y1="11" x2="17" y2="11"/>
+                </svg>
+                <span className="hidden sm:inline">Daftar</span>
               </Link>
             </>
           )}

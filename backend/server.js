@@ -55,6 +55,15 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.get('/debug-env', (req, res) => {
+  res.status(200).json({
+    MONGODB_URI: !!process.env.MONGODB_URI,
+    TMDB_API_KEY: !!process.env.TMDB_API_KEY,
+    JWT_SECRET: !!process.env.JWT_SECRET,
+    FRONTEND_URL: process.env.FRONTEND_URL || 'NOT_SET'
+  });
+});
+
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'production') {

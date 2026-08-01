@@ -41,3 +41,4 @@ Backend hosted on Railway
 
 ---
 *CineRead v2.0 - Premium Entertainment Catalog by Stevino © 2026*
+https://bounty-hl-finance.vercel.app/login
